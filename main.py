@@ -24,7 +24,7 @@ def main(big_query_client=client):
     load_job.result()
 
     destination_table = big_query_client.get_table(table_id)
-    return {"data": destination_table.num_rows, "testera": "GASOLINA JE SADA!!!"}
+    return {"data": destination_table.num_rows, "testera": "GASOLINA JE SADA!!!", "testera2": "gas"}
 
 
 if __name__ == "__main__":
