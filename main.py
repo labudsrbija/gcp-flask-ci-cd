@@ -6,6 +6,7 @@ import os
 app = Flask(__name__)
 client = bigquery.Client()
 
+## trigger
 
 @app.route('/')
 def main(big_query_client=client):
