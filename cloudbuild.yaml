@@ -12,7 +12,7 @@ steps:
   args:
     - 'tag'
     - 'demo-flask-app'
-    - 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+    - 'us-central1-docker.pkg.dev/project01-448522/project01-cicd/demo-flask-app:$COMMIT_SHA'
 
 # Step 3: Authenticate Docker with Artifact Registry
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -26,10 +26,11 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+    - 'us-central1-docker.pkg.dev/project01-448522/project01-cicd/demo-flask-app:$COMMIT_SHA'
 
 # Step 5: Run Tests with pytest
-- name: 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+- name: 'us-central1-docker.pkg.dev/project01-448522/project01-cicd/demo-flask-app:$COMMIT_SHA'
+- name: 'us-central1-docker.pkg.dev/project01-448522/project01-cicd/demo-flask-app:$COMMIT_SHA'
   entrypoint: 'bash'
   args:
     - '-c'
@@ -44,7 +45,7 @@ steps:
     - 'deploy'
     - 'demo-flask-app'
     - '--image'
-    - 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+    - 'us-central1-docker.pkg.dev/project01-448522/project01-cicd/demo-flask-app:$COMMIT_SHA'
     - '--region'
     - 'us-central1'
     - '--platform'
@@ -52,7 +53,7 @@ steps:
     - '--allow-unauthenticated'
 
 images:
-- 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+- 'us-central1-docker.pkg.dev/project01-448522/project01-cicd/demo-flask-app:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
