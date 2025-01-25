@@ -1,0 +1,58 @@
+steps:
+# Step 1: Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'demo-flask-app:$COMMIT_SHA'
+    - '.'
+
+# Step 2: Tag the image for Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'tag'
+    - 'demo-flask-app'
+    - 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+
+# Step 3: Authenticate Docker with Artifact Registry
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+
+# Step 4: Push the tagged image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+
+# Step 5: Run Tests with pytest
+- name: 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+        python -m pytest --disable-warnings --maxfail=1
+
+# Step 6: Deploy the image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args:
+    - 'run'
+    - 'deploy'
+    - 'demo-flask-app'
+    - '--image'
+    - 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+    - '--region'
+    - 'us-central1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+
+images:
+- 'us-central1-docker.pkg.dev/project01-448522/project01-repo/demo-flask-app:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
